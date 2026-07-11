@@ -33,7 +33,6 @@ jobs:
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
-      name: Sign app APK
       id: sign_app
       with:
         releaseDirectory: app/build/outputs/apk/release
@@ -59,4 +58,3 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
