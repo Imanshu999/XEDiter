@@ -25,10 +25,11 @@ jobs:
       run: |
         echo "$KEYSTORE_BASE64" | base64 --decode > app/my-release-key.jks
 
-    # gradlew फ़ाइल न होने पर यह सीधे सिस्टम के gradle कमांड का उपयोग करके बिल्ड करेगा
+    # यहाँ बिना रैपर के स्पेसिफिक ग्रेडल वर्शन डिफ़ाइन किया गया है
     - name: Build Release APK with Gradle Action
       uses: gradle/actions/setup-gradle@v3
       with:
+        gradle-version: '8.5'
         arguments: assembleRelease
 
     - name: Sign APK
