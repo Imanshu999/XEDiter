@@ -1,0 +1,6 @@
+{
+  "name": "XEDiter",
+  "description": "Offline Mobile Android IDE & Reverse Engineering Workspace",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
