@@ -25,10 +25,11 @@ android {
 
   signingConfigs {
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
+      // GitHub Actions वर्कफ़्लो के साथ मैच करने के लिए पाथ और डिटेल्स सेट की गई हैं
+      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/app/my-release-key.jks"
       storeFile = file(keystorePath)
       storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
+      keyAlias = System.getenv("KEY_ALIAS") ?: "my-key-alias"
       keyPassword = System.getenv("KEY_PASSWORD")
     }
     create("debugConfig") {
