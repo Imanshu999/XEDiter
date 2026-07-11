@@ -2,7 +2,7 @@ name: Android CI/CD - Build & Sign APK
 
 on:
   push:
-    branches: [ "main" ] # जब भी main ब्रांच पर कोड पुश होगा, यह रन करेगा
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -19,8 +19,17 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    # यदि gradlew रूट पर नहीं है, तो यह कमांड फेल नहीं होगी और उसे ढूंढकर परमिशन देगी
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: |
+        if [ -f "./gradlew" ]; then
+          chmod +x ./gradlew
+        elif [ -f "./app/gradlew" ]; then
+          chmod +x ./app/gradlew
+        else
+          echo "gradlew not found in expected paths, checking repository layout..."
+          find . -name "gradlew" -exec chmod +x {} +
+        fi
 
     - name: Decode Keystore
       env:
@@ -28,8 +37,20 @@ jobs:
       run: |
         echo "$KEYSTORE_BASE64" | base64 --decode > app/my-release-key.jks
 
+    # यदि gradlew सब-फ़ोल्डर में है, तो यह कमांड उसे ऑटोमैटिकली डिटेक्ट कर के रन करेगी
     - name: Build Release APK
-      run: ./gradlew assembleRelease
+      run: |
+        if [ -f "./gradlew" ]; then
+          ./gradlew assembleRelease
+        else
+          GRADLEW_PATH=$(find . -name "gradlew" | head -n 1)
+          if [ -z "$GRADLEW_PATH" ]; then
+            echo "Error: gradlew executable could not be found anywhere."
+            exit 1
+          fi
+          cd $(dirname "$GRADLEW_PATH")
+          ./gradlew assembleRelease
+        fi
 
     - name: Sign APK
       uses: r0adkll/sign-android-release@v1
